@@ -14,7 +14,7 @@ pipeline {
                             sh "echo '${password}' | sudo -S docker stop arhipov"
                             sh "echo '${password}' | sudo -S docker container rm arhipov"
                         } catch (Exception e) {
-                            print 'container not exist, skip clean'
+                            print 'Epic Fail'
                         }
                     }
                 }
@@ -38,8 +38,8 @@ pipeline {
                         usernameVariable: 'username',
                         passwordVariable: 'password')
                     ]) {
-
                         sh "echo '${password}' | sudo -S docker build ${WORKSPACE}/auto -t arhipovaa_nginx"
+                        currentBuild.result = 'FAILURE'
                         sh "echo '${password}' | sudo -S docker run -d -p 8220:80 --name arhipov -v /home/adminci/arhipovaa:/stat arhipovaa_nginx"
                     }
                 }
@@ -53,7 +53,6 @@ pipeline {
                         usernameVariable: 'username',
                         passwordVariable: 'password')
                     ]) {
-                        
                         sh "echo '${password}' | sudo -S docker exec -t arhipov bash -c 'df -h > /stat/stats.txt'"
                         sh "echo '${password}' | sudo -S docker exec -t arhipov bash -c 'top -n 1 -b >> /stat/stats.txt'"
                     }
